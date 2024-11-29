@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %} Cadastro - Listify {% endblock %}
+{% block conteudo %}
+
+<main class="bg-gray-800 flex-grow">
+    <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+        <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md mx-auto">
+            <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Novo Usuário:</h1>
+            <form action="{% url 'cadastro' %}" method="post" class="space-y-4 text-black">
+            {% csrf_token %}
+            <div>
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+                {% if form.nome.errors %}
+                <p class="text-red-500 text-sm">{{ form.nome.errors }}</p>
+                {% endif %}
+            </div>
+            <div>
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.custo.errors %}
+                <p class="text-red-500 text-sm">{{ form.email.errors }}</p>
+                {% endif %}
+            </div>
+            <!-- Campo Data Limite -->
+            <div>
+                {{ form.senha.label_tag }}
+                {{ form.senha }}
+                {% if form.data_limite.errors %}
+                <p class="text-red-500 text-sm">{{ form.senha.errors }}</p>
+                {% endif %}
+            </div>
+            <button
+                type="submit"
+                class="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+                Enviar
+            </button>
+            </form>
+        </div>
+    </body>
+</main>
+
+{% endblock %}

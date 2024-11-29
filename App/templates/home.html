@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <main>
+        <section>
+        <div class="container">
+            <div class="title">
+                <h1>LISTIFY</h1>
+            </div>
+            <div class="frase1">
+                <h2>O Sistema Inteligente para Gerenciar suas Tarefas.</h2>
+            </div>
+                <img src="https://readme-typing-svg.herokuapp.com?font=Poppins&weight=500&size=35&duration=3000&pause=50&color=F7F7F7&vCenter=true&width=200&lines=Simples.;%C3%81gil.;Produtivo." 
+                alt="Typing SVG" />
+        </div>
+        <div class="buttons">
+            <a class="btnLogin" href="{% url 'login' %}">Login</a>
+            <a class="btnCadastro" href="{% url 'cadastro' %}">Cadastre-se</a>
+        </div>
+        </section>
+    </main>
+</body>
+</html>

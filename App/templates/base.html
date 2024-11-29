@@ -1,0 +1,39 @@
+{% load static %}
+
+
+<!doctype html>
+<html lang="pt-br">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Listify - Gerenciamento de Tarefas{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<header>
+    <nav class="bg-red-600 text-white p-6">
+        <div class="container mx-auto flex items-center justify-between px-10">
+            <a href="/" class="text-2xl font-bold">Listify</a>
+            {% comment %} <div class="space-x-6 text-lg">
+                <a href="/" class="base hover:text-yellow-300">Início</a>
+                <a href="" class="hover:text-yellow-300">Tarefas</a>
+                <a href="" class="hover:text-yellow-300">Adicionar Tarefa</a>
+                <a href="#" class="hover:text-yellow-300">Sobre</a>
+            </div> {% endcomment %}
+        </div>
+    </nav>
+</header>
+
+    {% block conteudo %}
+    {% endblock %}
+
+    <footer class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto text-center">
+            <a href="{% url 'criar-tarefa' %}" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-md shadow-md inline-block">
+                + Adicionar Nova Tarefa
+            </a>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<main class="bg-gray-800 flex-grow">
+    <div class="max-w-5xl mx-auto bg-white shadow-md rounded-md">
+        <h2 class="text-3xl font-semibold text-gray-800 text-center p-5">Lista de Tarefas</h2>
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">ID</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Nome</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Custo</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Data Limite</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Ordem</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for contexto in tarefas_contexto %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ contexto.tarefa.id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ contexto.tarefa.nome }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ contexto.tarefa.custo }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ contexto.tarefa.data_limite }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <div class="flex space-x-2">
+                            {% if contexto.anterior %}
+                            <form method="POST" action="{% url 'mover-tarefa' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="task1_id" value="{{ contexto.tarefa.id }}">
+                                <input type="hidden" name="task2_id" value="{{ contexto.anterior.id }}">
+                                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">↑</button>
+                            </form>
+                            {% endif %}
+                            {% if contexto.proxima %}
+                            <form method="POST" action="{% url 'mover-tarefa' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="task1_id" value="{{ contexto.tarefa.id }}">
+                                <input type="hidden" name="task2_id" value="{{ contexto.proxima.id }}">
+                                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">↓</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                     <td class="py-4 whitespace-nowrap text-sm">
+                        <div class="flex space-x-2">
+                            <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">✏️</button>
+                            <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">❌</button>
+                        </div>
+                     </td>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>                
+        </table>
+    </div>
+</main>
+
+{% endblock %}
