@@ -110,8 +110,9 @@ def login(request):
                 return redirect('index')
             else:
                 messages.error(request, "Senha incorreta.")
-        except usuario.DoesNotExist:
+        except Usuario.DoesNotExist:
             messages.error(request, "Usuário não encontrado.")
+
     context = {
         'form': formLogin
     }
