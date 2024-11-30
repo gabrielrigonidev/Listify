@@ -3,7 +3,11 @@
 **Bem-vindo ao Listify!**  
 Este projeto é um gerenciador de tarefas desenvolvido como parte de um processo seletivo para a posição de desenvolvedor web. A aplicação permite criar, visualizar, editar, excluir e organizar tarefas, oferecendo funcionalidades personalizadas como contagem de tarefas urgentes e de alto custo, tudo com foco na usabilidade e uma interface intuitiva.  
 
----
+<div align="center">
+<br>
+   <p>Tecnologias utilizadas:</p>
+  <img align="center" src="https://skillicons.dev/icons?i=python,django,tailwind,sqlite">
+</div>
 
 ## Funcionalidades  
 
@@ -28,23 +32,38 @@ Este projeto é um gerenciador de tarefas desenvolvido como parte de um processo
 
 ---
 
-## Tecnologias Utilizadas  
-
-### Backend  
-- **Python 3.9+**  
-- **Django 4.x**  
-- Banco de Dados: SQLite  
-
-### Frontend  
-- **HTML5**  
-- **CSS3**  
-- **Tailwind CSS**  
-
----
-
 ## Como Rodar o Projeto  
 
 1. **Clone o Repositório**:  
    ```bash
    git clone https://github.com/seu-usuario/listify.git
    cd listify
+
+2. **Crie e Ative um Ambiente Virtual e instale as dependências::**:  
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   venv\Scripts\activate     # Windows
+   pip install -r requirements.txt
+
+3. **Aplique as Migrações:**:  
+   ```bash
+   python manage.py migrate
+
+4. **Inicie o Servidor Local:**:  
+   ```bash
+   python manage.py runserver
+   # Acesse em http://127.0.0.1:8000/
+
+---
+
+## Autor  
+
+**[Gabriel Rigoni]**  
+Desenvolvedor apaixonado por criar soluções eficientes e amigáveis para o usuário. Este projeto foi desenvolvido como parte de um processo seletivo, demonstrando habilidades em Python, Django, Tailwind CSS e banco de dados SQLite.  
+
+- [LinkedIn](https://www.linkedin.com/in/gabriel-rigoni-martins/)  
+- [Email](rigonigabriel12@gmail.com)  
+
+Sinta-se à vontade para entrar em contato para discutir este projeto ou futuras oportunidades!
+
