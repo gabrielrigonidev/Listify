@@ -56,7 +56,7 @@ def cadastro(request):
             novo_user.instance.senha = make_password(senha)
             novo_user.save()
             messages.success(request, "Usuário cadastrado com sucesso!")
-            return redirect('index')
+            return redirect('home')
     context = {
         'form': novo_user
     }
