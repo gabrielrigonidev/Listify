@@ -1,39 +1,73 @@
 {% load static %}
 
-
 <!doctype html>
 <html lang="pt-br">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Listify - Gerenciamento de Tarefas{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="shortcut icon" href="{% static 'Listify-logo.png' %}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
 <header>
     <nav class="bg-red-600 text-white p-6">
         <div class="container mx-auto flex items-center justify-between px-10">
-            <a href="/" class="text-2xl font-bold">Listify</a>
-            {% comment %} <div class="space-x-6 text-lg">
-                <a href="/" class="base hover:text-yellow-300">Início</a>
-                <a href="" class="hover:text-yellow-300">Tarefas</a>
-                <a href="" class="hover:text-yellow-300">Adicionar Tarefa</a>
-                <a href="#" class="hover:text-yellow-300">Sobre</a>
-            </div> {% endcomment %}
+            <a href="{% url 'home' %}" class="text-2xl font-bold">
+                Listify
+                <img src="{% static 'Listify-logo.png' %}" alt="Logo Listify" style="width: 50px;">
+            </a>
+            
+            <div class="space-x-6 text-lg relative">
+                <div class="relative inline-block text-left group">
+                    <button class="hover:text-yellow-300 focus:outline-none">
+                        Menu
+                    </button>
+                    <div class="absolute right-0 mt-2 w-40 bg-white text-black shadow-lg rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                        <a href="{% url 'home' %}" class="block px-4 py-2 hover:bg-gray-100">Início</a>
+                        <a href="{% url 'index' %}" class="block px-4 py-2 hover:bg-gray-100">Tarefas</a>
+                        <a href="{% url 'criar-tarefa' %}" class="block px-4 py-2 hover:bg-gray-100">Adicionar Tarefa</a>
+                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-red-500 hover:bg-gray-100">
+                            Sair
+                        </a>
+                    </div>
+                </div>
+    
+                <span class="text-yellow-300">
+                    Urgentes: {{ tarefas_urgentes_count }}
+                </span>
+                <span class="ml-4 text-yellow-300">
+                    Alto Custo: {{ tarefas_alto_custo_count }}
+                </span>
+            </div>
         </div>
     </nav>
+    
+    
 </header>
+    <div class="container mx-auto">
+        {% if messages %}
+            <div class="space-y-2">
+                {% for message in messages %}
+                    <div class="px-4 py-2 rounded-md shadow-md {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
     {% block conteudo %}
     {% endblock %}
-
-    <footer class="bg-gray-800 text-white py-4">
-        <div class="container mx-auto text-center">
-            <a href="{% url 'criar-tarefa' %}" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-md shadow-md inline-block">
-                + Adicionar Nova Tarefa
-            </a>
-        </div>
-    </footer>
+    {% if request.session.email %}
+        <footer class="bg-gray-800 text-white py-4">
+            <div class="container mx-auto text-center">
+                <a href="{% url 'criar-tarefa' %}" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-md shadow-md inline-block">
+                    + Adicionar Nova Tarefa
+                </a>
+            </div>
+        </footer>
+    {% endif %}
 
 </body>
 </html>

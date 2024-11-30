@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block conteudo %}
-
-<main class="bg-gray-800 flex-grow">
-    <div class="max-w-5xl mx-auto bg-white shadow-md rounded-md">
+<main>
+    <div class="flex-grow max-w-5xl mx-auto bg-white shadow-md rounded-md">
+        
         <h2 class="text-3xl font-semibold text-gray-800 text-center p-5">Lista de Tarefas</h2>
+        <h5 class="text-1xl font-semibold text-gray-800 text-center p-5">Seja bem vindo, {{ usuario.nome }}</h5>
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
@@ -16,35 +17,41 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                {% for contexto in tarefas_contexto %}
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ contexto.tarefa.id }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ contexto.tarefa.nome }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ contexto.tarefa.custo }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ contexto.tarefa.data_limite }}</td>
+                {% for campo in tarefas_campos %}
+                <tr class="{% if campo.tarefa.custo >= 1000 %}bg-yellow-300{% else %}bg-white{% endif %}">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ campo.tarefa.id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ campo.tarefa.nome }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ campo.tarefa.custo }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ campo.tarefa.data_limite }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                         <div class="flex space-x-2">
-                            {% if contexto.anterior %}
+                            {% if campo.anterior %}
                             <form method="POST" action="{% url 'mover-tarefa' %}">
                                 {% csrf_token %}
-                                <input type="hidden" name="task1_id" value="{{ contexto.tarefa.id }}">
-                                <input type="hidden" name="task2_id" value="{{ contexto.anterior.id }}">
+                                <input type="hidden" name="task1_id" value="{{ campo.tarefa.id }}">
+                                <input type="hidden" name="task2_id" value="{{ campo.anterior.id }}">
                                 <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">↑</button>
                             </form>
                             {% endif %}
-                            {% if contexto.proxima %}
+                            {% if campo.proxima %}
                             <form method="POST" action="{% url 'mover-tarefa' %}">
                                 {% csrf_token %}
-                                <input type="hidden" name="task1_id" value="{{ contexto.tarefa.id }}">
-                                <input type="hidden" name="task2_id" value="{{ contexto.proxima.id }}">
+                                <input type="hidden" name="task1_id" value="{{ campo.tarefa.id }}">
+                                <input type="hidden" name="task2_id" value="{{ campo.proxima.id }}">
                                 <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">↓</button>
                             </form>
                             {% endif %}
                         </div>
                      <td class="py-4 whitespace-nowrap text-sm">
                         <div class="flex space-x-2">
-                            <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">✏️</button>
-                            <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">❌</button>
+                            <a href="{% url 'editar-tarefa' campo.tarefa.id %}" 
+                                class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">
+                                ✏️ Editar
+                            </a>
+                            <a href="{% url 'excluir-tarefa' campo.tarefa.id %}" 
+                                class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">
+                                ❌ Excluir
+                            </a>
                         </div>
                      </td>
                     </td>

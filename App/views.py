@@ -1,8 +1,10 @@
 from django.http import JsonResponse
 from datetime import timedelta
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
+from django.utils import timezone
+from datetime import timedelta
 from django.db import transaction
 from .forms import FormCriarTarefa, FormCadastroUser, FormLogin
 from App.models import Tarefas, Usuario
@@ -15,22 +17,36 @@ def index(request):
         messages.error(request, "Você precisa estar logado para acessar esta página.")
         return redirect('login')
 
-    tarefas = Tarefas.objects.order_by('ordem_apresentacao')
-    tarefas_contexto = []
+    usuario_email = request.session['email']
+    usuario = Usuario.objects.get(email=usuario_email)
 
+    tarefas = Tarefas.objects.filter(usuario=usuario).order_by('ordem_apresentacao')
+
+    data_limite_urgente = timezone.now() + timedelta(days=3)
+    tarefas_urgentes = tarefas.filter(data_limite__lte=data_limite_urgente)
+
+    tarefas_alto_custo = tarefas.filter(custo__gte=1000)
+
+    tarefas_campos = []
     for index, tarefa in enumerate(tarefas):
         anterior = tarefas[index - 1] if index > 0 else None
         proxima = tarefas[index + 1] if index < len(tarefas) - 1 else None
-        tarefas_contexto.append({
+        tarefas_campos.append({
             'tarefa': tarefa,
             'anterior': anterior,
             'proxima': proxima,
         })
-    return render(request, 'lista-tarefas.html', {'tarefas_contexto': tarefas_contexto})
+
+    return render(request, 'lista-tarefas.html', {
+        'usuario': usuario,
+        'tarefas_campos': tarefas_campos,
+        'tarefas_urgentes_count': tarefas_urgentes.count(),
+        'tarefas_alto_custo_count': tarefas_alto_custo.count(),
+    })
 
 def cadastro(request):
     novo_user = FormCadastroUser(request.POST or None)
-    if request.POST:
+    if request.method == 'POST':
         email = request.POST.get('email')
         senha = request.POST.get('senha')
 
@@ -46,15 +62,94 @@ def cadastro(request):
     }
     return render(request, 'cadastro.html', context)
 
+def login(request):
+    usuario_logado = FormLogin(request.POST or None)
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+
+        try:
+            usuario = Usuario.objects.get(email=email)
+            if check_password(senha, usuario.senha):
+                request.session.set_expiry(timedelta(seconds=180))
+                request.session['email'] = email
+                messages.success(request, "Logado com sucesso!")
+                return redirect('index')
+            else:
+                messages.error(request, "Dados incorretos.")
+        except Usuario.DoesNotExist:
+            messages.error(request, "Usuário não encontrado.")
+
+    context = {
+        'form': usuario_logado
+    }
+    return render (request, 'login.html', context)
+
 def criar_tarefa(request):
+    if 'email' not in request.session:
+        messages.error(request, "Você precisa estar logado para acessar esta página.")
+        return redirect('login')
+
+    try:
+        usuario = Usuario.objects.get(email=request.session['email'])
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuário não encontrado.")
+        return redirect('login')
+
     if request.method == 'POST':
         form = FormCriarTarefa(request.POST)
         if form.is_valid():
-            form.save()
+            tarefa = form.save(commit=False)
+            tarefa.usuario = usuario
+            tarefa.save()
+            messages.success(request, "Tarefa criada com sucesso!")
             return redirect('index')
     else:
         form = FormCriarTarefa()
     return render(request, 'criar-tarefa.html', {'form': form})
+
+def editar_tarefa(request, tarefa_id):
+    if 'email' not in request.session:
+        messages.error(request, "Você precisa estar logado para acessar esta página.")
+        return redirect('login')
+    try:
+        usuario = Usuario.objects.get(email=request.session['email'])
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuário não encontrado.")
+        return redirect('login')
+
+    tarefa = get_object_or_404(Tarefas, id=tarefa_id, usuario=usuario)
+
+    if request.method == 'POST':
+        form = FormCriarTarefa(request.POST, instance=tarefa)
+        if form.is_valid():
+            nome_novo = form.cleaned_data['nome']
+            if Tarefas.objects.filter(nome=nome_novo, usuario=usuario).exclude(id=tarefa_id).exists():
+                messages.error(request, "Já existe uma tarefa com esse nome.")
+            else:
+                form.save()
+                messages.success(request, "Tarefa atualizada com sucesso!")
+                return redirect('index')
+    else:
+        form = FormCriarTarefa(instance=tarefa)
+    return render(request, 'editar-tarefa.html', {'form': form, 'tarefa': tarefa})
+
+def excluir_tarefa(request, tarefa_id):
+    if 'email' not in request.session:
+        messages.error(request, "Você precisa estar logado para realizar esta ação.")
+        return redirect('login')
+
+    tarefa = get_object_or_404(Tarefas, id=tarefa_id)
+
+    if request.method == 'POST':
+        if request.POST.get("confirm") == "Sim":
+            tarefa.delete()
+            messages.success(request, "Tarefa excluída com sucesso!")
+        else:
+            messages.info(request, "Exclusão cancelada.")
+        return redirect('index')
+
+    return render(request, 'deletar-tarefa.html', {'tarefa': tarefa})
 
 def trocar_ordem_apresentacao(id_1, id_2):
     with transaction.atomic():
@@ -94,27 +189,14 @@ def trocar_posicoes(request):
             }, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
-def login(request):
-    formLogin = FormLogin(request.POST or None)
-
+def logout(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        senha = request.POST.get('senha')
-
         try:
-            usuario = Usuario.objects.get(email=email)
-            if check_password(senha, usuario.senha):
-                request.session.set_expiry(timedelta(seconds=60))
-                request.session['email'] = email
-                messages.success(request, "Logado com sucesso!")
-                return redirect('index')
-            else:
-                messages.error(request, "Senha incorreta.")
-        except Usuario.DoesNotExist:
-            messages.error(request, "Usuário não encontrado.")
+            del request.session['email']
+            messages.success(request, "Você foi deslogado com sucesso.")
+            return redirect('index')
+        except KeyError:
+            messages.error(request, "Erro ao tentar deslogar.")
+        return redirect('login')
 
-    context = {
-        'form': formLogin
-    }
-    return render (request, 'login.html', context)
-    
+    return render(request, 'logout.html')

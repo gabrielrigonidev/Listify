@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+
+<main class="bg-gray-800 flex-grow">
+    <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+        <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md mx-auto text-black">
+            <h1 class="text-xl font-bold mb-4">Confirmar Exclusão</h1>
+            <p class="mb-4">Tem certeza de que deseja excluir a tarefa: <strong>{{ tarefa.nome }}</strong>?</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="flex space-x-4">
+                        <button type="submit" name="confirm" value="Sim" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
+                            Sim
+                        </button>
+                        <button type="submit" name="confirm" value="Não" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">
+                            Não
+                        </button>
+                    </div>
+                </form>
+        </div>
+    </body>
+</main>
+{% endblock %}

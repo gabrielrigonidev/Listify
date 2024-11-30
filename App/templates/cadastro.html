@@ -19,15 +19,14 @@
             <div>
                 {{ form.email.label_tag }}
                 {{ form.email }}
-                {% if form.custo.errors %}
+                {% if form.email.errors %}
                 <p class="text-red-500 text-sm">{{ form.email.errors }}</p>
                 {% endif %}
             </div>
-            <!-- Campo Data Limite -->
             <div>
                 {{ form.senha.label_tag }}
                 {{ form.senha }}
-                {% if form.data_limite.errors %}
+                {% if form.senha.errors %}
                 <p class="text-red-500 text-sm">{{ form.senha.errors }}</p>
                 {% endif %}
             </div>

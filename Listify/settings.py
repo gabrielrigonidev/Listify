@@ -67,6 +67,15 @@ TEMPLATES = [
     },
 ]
 
+from django.contrib.messages import constants as message_constants
+MESSAGE_TAGS = {
+    message_constants.ERROR: 'bg-red-500 text-white',
+    message_constants.SUCCESS: 'bg-green-500 text-white',
+    message_constants.WARNING: 'bg-yellow-500 text-black',
+    message_constants.INFO: 'bg-blue-500 text-white',
+    message_constants.DEBUG: 'bg-gray-500 text-white',
+}
+
 WSGI_APPLICATION = 'Listify.wsgi.application'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
@@ -76,10 +85,10 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -116,8 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Diretório onde estão os arquivos estáticos
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')   # Diretório para onde os arquivos serão coletados
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Default primary key field type

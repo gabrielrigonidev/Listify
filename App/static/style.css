@@ -16,7 +16,6 @@ body {
     display: block;
     width: 100%;
     height: 100vh;
-
 }
 
 main {
@@ -47,7 +46,6 @@ main {
             margin-top: 10px;
             font-size: 35px;
         }
-
 
         .buttons {
             display: flex;
