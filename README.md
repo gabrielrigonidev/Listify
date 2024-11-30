@@ -3,6 +3,10 @@
 **Bem-vindo ao Listify!**  
 Este projeto é um gerenciador de tarefas desenvolvido como parte de um processo seletivo para a posição de desenvolvedor web. A aplicação permite criar, visualizar, editar, excluir e organizar tarefas, oferecendo funcionalidades personalizadas como contagem de tarefas urgentes e de alto custo, tudo com foco na usabilidade e uma interface intuitiva.  
 
+Acesse pelo Link!
+- [Projeto Hospedado por: PythonAnywhere](https://listifyapp.pythonanywhere.com/)  
+
+
 <div align="center">
 <br>
    <p>Tecnologias utilizadas:</p>
